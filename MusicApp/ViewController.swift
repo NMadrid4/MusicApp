@@ -29,6 +29,7 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         pauseButton.isHidden = true
+        
         previousButton.isEnabled = false
         playSound(fileName: canciones[cont], fileExtension: "mp3")
         print(cont)
@@ -52,14 +53,13 @@ class ViewController: UIViewController {
         }
     }
 
-
     @IBAction func playSound(_ sender: Any) {
-        audio.play()
         titleLabel.text = canciones[cont]
         playButton.isHidden = true
         pauseButton.isHidden = false
+        audio.play()
     }
-    
+
     @IBAction func pauseSound(_ sender: Any) {
         if audio.isPlaying {
                 audio.pause()
@@ -69,21 +69,28 @@ class ViewController: UIViewController {
         playButton.isHidden = false
     }
     @IBAction func previousSound(_ sender: Any) {
-        while cont > 0 {
+        if !audio.isPlaying {
+            playButton.isHidden = true
+            pauseButton.isHidden = false
+        }
+        if cont > 0 {
             previousButton.isEnabled = true
             cont-=1
             playSound(fileName: canciones[cont], fileExtension: "mp3")
             audio.play()
+            titleLabel.text = canciones[cont]
             print(cont)
         }
-
+        if cont == 0{
+            previousButton.isEnabled = false
+        }
     }
     
     @IBAction func nextSound(_ sender: Any) {
         previousButton.isEnabled = true
-        if audio.isPlaying {
-            audio.stop()
-            
+        if !audio.isPlaying {
+            playButton.isHidden = true
+            pauseButton.isHidden = false
         }
         if cont == canciones.count-1 {
             cont=0
@@ -92,15 +99,10 @@ class ViewController: UIViewController {
             titleLabel.text = canciones[cont]
             return
         }
-        
         cont+=1
         playSound(fileName: canciones[cont], fileExtension: "mp3")
         audio.play()
         titleLabel.text = canciones[cont]
-        print(cont)
-
     }
-    
-    
 }
 
